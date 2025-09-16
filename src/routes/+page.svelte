@@ -1,7 +1,7 @@
 <script>
   import { House, Info, ArrowBigRightDash, ClipboardPaste, Delete, ArrowLeft } from '@lucide/svelte'
   import { enhance } from '$app/forms'
-  import { navigating } from '$app/state'
+  import { navigating, page } from '$app/state'
   import { get_cookie } from '$lib/cookie'
   import { browser } from '$app/environment'
   import { goto, invalidate } from '$app/navigation'
@@ -9,7 +9,7 @@
   import { PUBLIC_CLIENT_URL, PUBLIC_SERVER_URL } from '$env/static/public'
   import { argon2id } from 'hash-wasm'
   import { decodeHex, encodeHex } from '@std/encoding'
-  import { onDestroy } from 'svelte'
+  import { onDestroy, onMount } from 'svelte'
   import database from '$lib/surrealdb'
   import { RecordId } from 'surrealdb'
   import { hashAuthenticationPass, hashEncryptionPass } from '$lib/encryption.js'
@@ -21,6 +21,8 @@
   let password = $state('')
   let sign_in = $state('')
   let loading = $state(false)
+
+  let view = $state('')
 
   async function get_organiser_salt(){
     loading = true
@@ -71,6 +73,14 @@
     goto('/', { replaceState: true })
     loading = false
   }
+
+  onMount(() => {
+    if(page.url.hash){ view = page.url.hash } else { view = '#statistics' }
+  })
+
+  $effect(() => {
+    if(page.url.hash){ view = page.url.hash } else { view = '#statistics' }
+  })
   
   onDestroy(() => {
     reset()
@@ -232,6 +242,22 @@
         <a href="/create" class="btn btn-accent w-auto flex-1">Create</a>
         <a href="/respond" class="btn btn-outline w-auto flex-1">Respond</a>
       </div>
+    </div>
+  </div>
+
+  <div class="card card-border card-lg mt-4 bg-base-200 w-full min-w-xs">
+    <div class="card-body items-center text-center">
+      <h2 class="card-title uppercase">HalfHour</h2>
+      <div role="tablist" class="tabs tabs-border">
+        <a role="tab" href="#statistics" class={`tab ${view === '#statistics' ? 'tab-active' : ''}`}>Statistics</a>
+        <a role="tab" href="#tutorial" class={`tab ${view === '#tutorial' ? 'tab-active' : ''}`}>Tutorial</a>
+        <a role="tab" href="#opensource" class={`tab ${view === '#opensource' ? 'tab-active' : ''}`}>Source</a>
+      </div>
+      {#if view === '#statistics' }
+        <div class="tab-content">
+          
+        </div>
+      {/if}
     </div>
   </div>
 </div>
