@@ -46,7 +46,7 @@
     <form class="card-body" method="POST" action="?/respond" use:enhance={async ({formData, cancel}) => {
       loading = true
       if(password.length < 10){
-        add_toast({ message: 'The anchor must be at least 10 characters long', type: 'error', auto: true }) 
+        add_toast({ message: 'The password must be at least 10 characters long', type: 'error', auto: true }) 
         cancel()
         loading = false
       } else { 
