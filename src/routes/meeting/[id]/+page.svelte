@@ -4,8 +4,8 @@
   import { PUBLIC_SERVER_URL, PUBLIC_APP_ENV } from "$env/static/public"
   import { SendHorizonal, Clock, Image, CircleX, Eye, Info, PartyPopper } from "@lucide/svelte"
   import { get_cookie } from "$lib/cookie"
-  import { sha1 } from 'hash-wasm'
-  import { toasts, add_toast, clean_toasts } from '$lib/toasts.svelte.js'
+  import { sha1 } from "hash-wasm"
+  import { toasts, add_toast, clean_toasts } from "$lib/toasts.svelte.js"
   import { RecordId } from "surrealdb"
   import database from "$lib/surrealdb"
   import { sha256 } from "@noble/hashes/sha2"
@@ -13,6 +13,7 @@
   import { x25519 } from '@noble/curves/ed25519.js'
   import { decryptFile, deriveSharedTextKey, deriveSharedFileKey, encryptFile, generate_attendee_keypair, encryptText, decryptText, generate_organiser_keypair } from "$lib/encryption.js"
   import { encodeHex } from "@std/encoding"
+  import { goto } from "$app/navigation"
 
   let { data } = $props()
 
@@ -353,7 +354,13 @@
         }
       })
     )
-    messages.push(...decrypted_messages)
+    
+    decrypted_messages.forEach(val => {
+      if(messages.findIndex(item => item.id === val.id) < 0){
+        binarySearchInsertAsc(val)
+      }
+    })
+
     storage = data.meeting.total_storage
     scrollBottom()
   })
@@ -383,11 +390,9 @@
   $effect(() => { scrollBottom() })
 
   function returnLink(){
-    if(person === data.meeting.attendee_id){
-      return '/attendee'
-    } else {
-      return '/organiser'
-    }
+    if(time_to_destruction < 0){ goto('/') }
+    if(person === data.meeting.attendee_id){ goto('/attendee') } 
+    if(person === data.meeting.organiser_id){ goto('/organiser') }
   }
 
   $inspect(messages).with(console.log)
@@ -405,8 +410,8 @@
         <div class="navbar-start w-4/5">
           <div class="flex flex-col">
             <h1 class="line-clamp-1 text-lg font-bold">{person === data.meeting.organiser_id ?  data.meeting.attendee_name : data.meeting.organiser_name }</h1>
-            <span class={`flex items-center font-semibold ${is_peer_online ? 'text-primary' : 'text-neutral opacity-70'}`}>
-              <div aria-label="status" class={`status ${is_peer_online ? 'status-primary animate-pulse' : 'status-neutral'} mr-2`}></div>
+            <span class={`flex items-center font-semibold ${is_peer_online ? 'text-accent' : 'text-neutral opacity-70'}`}>
+              <div aria-label="status" class={`status ${is_peer_online ? 'status-accent animate-pulse' : 'status-neutral'} mr-2`}></div>
               {is_peer_online ? 'Online' : 'Offline'}
               {#if is_peer_typing}
                 <span class="text-neutral font-normal ml-2">& is typing...</span>
@@ -415,9 +420,9 @@
           </div>
         </div>
         <div class="navbar-end w-1/5">
-          <a class="btn btn-circle text-xl" href={returnLink()}>
+          <button type="button" class="btn btn-circle text-xl" onclick={returnLink}>
             <img src="/halfhour.svg" alt="Elela icon" height="40px" width="40px" />
-          </a>
+          </button>
         </div>
       </div>
       {#if time_to_destruction > 0 && time_to_commencement < 0}
@@ -539,13 +544,13 @@
       </div>
       {#if time_to_destruction > 0 && time_to_commencement < 0}
         {#if preview && image}
-          <div class="card bg-neutral border-2 border-neutral w-full shadow-sm">
+          <div class="card bg-accent border-2 border-accent w-full shadow-sm">
             <figure id="prevfig" class="max-h-[calc(50vh-2rem)] rounded-[30px] overflow-y-auto">
               <img
                 src={preview}
                 alt="Preview" />
             </figure>
-            <div class="card-body text-base-100">
+            <div class="card-body">
               <div class="flex flex-row items-center justify-between">
                 <h3 class="font-bold flex-1">
                   {#if loading}
