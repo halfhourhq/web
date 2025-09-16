@@ -1,5 +1,5 @@
 <script>
-	import { page } from '$app/state';
+	import { page } from '$app/state'
   import { TriangleAlert } from '@lucide/svelte'
   import { goto } from '$app/navigation'
 </script>
@@ -12,7 +12,9 @@
     <TriangleAlert />
     <h1 class="text-lg">{page.status}: {page.error.message}</h1>
   </span>
-  <button onclick={() => goto('/')} class="btn btn-circle mt-8">
-    <img src="/halfhour.svg" alt="Icon" class="w-[2.4rem]">
-  </button>
+  {#if page.url.pathname.startsWith('/meeting/')}
+    <button onclick={() => goto('/')} class="btn btn-circle mt-8">
+      <img src="/halfhour.svg" alt="Icon" class="w-[2.4rem]">
+    </button>
+  {/if}
 </div>
