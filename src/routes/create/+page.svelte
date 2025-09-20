@@ -30,8 +30,8 @@
     description: `You have a meeting on the HalfHour app. Visit halfhour.online to attend your meeting.`
   }) }
 
-  const date_formatter = new Intl.DateTimeFormat('en-ZA', { dateStyle: 'medium' });
-  const time_formatter = new Intl.DateTimeFormat('en-ZA', { timeStyle: 'short' });
+  const date_formatter = new Intl.DateTimeFormat('en-ZA', { dateStyle: 'medium' })
+  const time_formatter = new Intl.DateTimeFormat('en-ZA', { timeStyle: 'short' })
 
   onDestroy(() => {clean_toasts()})
 </script>

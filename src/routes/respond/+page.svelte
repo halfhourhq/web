@@ -30,8 +30,8 @@
     description: `You replied to ${attendee.meeting_tag} meeting on HalfHour, visit halfhour.online to see if your response has been accepted.`
   }) }
 
-  const date_formatter = new Intl.DateTimeFormat('en-ZA', { dateStyle: 'medium' });
-  const time_formatter = new Intl.DateTimeFormat('en-ZA', { timeStyle: 'short' });
+  const date_formatter = new Intl.DateTimeFormat('en-ZA', { dateStyle: 'medium' })
+  const time_formatter = new Intl.DateTimeFormat('en-ZA', { timeStyle: 'short' })
 
   onDestroy(() => {clean_toasts()})
 </script>

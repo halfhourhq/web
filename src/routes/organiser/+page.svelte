@@ -14,8 +14,8 @@
     add_toast({ message: 'Meeting tag successfully copied to clipboard', type: 'success', auto: true })
   }
 
-  const date_formatter = new Intl.DateTimeFormat('en-ZA', { dateStyle: 'medium' });
-  const time_formatter = new Intl.DateTimeFormat('en-ZA', { timeStyle: 'short' });
+  const date_formatter = new Intl.DateTimeFormat('en-ZA', { dateStyle: 'medium' })
+  const time_formatter = new Intl.DateTimeFormat('en-ZA', { timeStyle: 'short' })
 
   onDestroy(() => { clean_toasts() })
 </script>
