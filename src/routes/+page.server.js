@@ -2,6 +2,23 @@ import { error, fail, redirect } from '@sveltejs/kit'
 import { PUBLIC_SERVER_URL, PUBLIC_APP_ENV, PUBLIC_COOKIE_DOMAIN } from '$env/static/public'
 import { decodeJwt } from 'jose'
 
+export async function load({ cookies, params }){
+  const id = params.id
+
+  const res_meetings = await fetch(`${PUBLIC_SERVER_URL}/statistics/meetings`)
+  const res_jobs = await fetch(`${PUBLIC_SERVER_URL}/statistics/jobs`)
+
+  if(!res_meetings.ok){
+    error(res_meetings.status, { message: await res_meetings.text() })
+  }
+
+  if(!res_jobs.ok){
+    error(res_jobs.status, { message: await res_jobs.text() })
+  }
+
+  return { meetings: await res_meetings.json(), jobs: await res_jobs.json() }
+}
+
 export const actions = {
   organiser: async ({ request, cookies }) => {
     const token = cookies.get('access_token')

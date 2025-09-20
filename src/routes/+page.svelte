@@ -1,5 +1,5 @@
 <script>
-  import { House, Info, ArrowBigRightDash, ClipboardPaste, Delete, ArrowLeft } from '@lucide/svelte'
+  import { House, Info, ArrowBigRightDash, ClipboardPaste, Delete, ArrowLeft, SquareArrowOutUpRight } from '@lucide/svelte'
   import { enhance } from '$app/forms'
   import { navigating, page } from '$app/state'
   import { get_cookie } from '$lib/cookie'
@@ -21,6 +21,9 @@
   let password = $state('')
   let sign_in = $state('')
   let loading = $state(false)
+
+  const date_formatter = new Intl.DateTimeFormat('en-ZA', { dateStyle: 'medium' })
+  const time_formatter = new Intl.DateTimeFormat('en-ZA', { timeStyle: 'short' })
 
   let view = $state('')
 
@@ -75,11 +78,11 @@
   }
 
   onMount(() => {
-    if(page.url.hash){ view = page.url.hash } else { view = '#statistics' }
+    if(page.url.hash){ view = page.url.hash } else { view = '#tutorial' }
   })
 
   $effect(() => {
-    if(page.url.hash){ view = page.url.hash } else { view = '#statistics' }
+    if(page.url.hash){ view = page.url.hash } else { view = '#tutorial' }
   })
   
   onDestroy(() => {
@@ -245,18 +248,177 @@
     </div>
   </div>
 
-  <div class="card card-border card-lg mt-4 bg-base-200 w-full min-w-xs">
+  <div class="card card-border card-xs mt-4 bg-base-200 w-full min-w-xs">
     <div class="card-body items-center text-center">
-      <h2 class="card-title uppercase">HalfHour</h2>
-      <div role="tablist" class="tabs tabs-border">
+      <h2 class="text-4xl font-black uppercase text-neutral tracking-widest">HalfHour</h2>
+      <span class="text-lg font-light opacity-70">Meet with Internet strangers without sharing personal info beforehand</span>
+      <div role="tablist" class="tabs tabs-border tabs-md mt-4">
         <a role="tab" href="#statistics" class={`tab ${view === '#statistics' ? 'tab-active' : ''}`}>Statistics</a>
         <a role="tab" href="#tutorial" class={`tab ${view === '#tutorial' ? 'tab-active' : ''}`}>Tutorial</a>
-        <a role="tab" href="#opensource" class={`tab ${view === '#opensource' ? 'tab-active' : ''}`}>Source</a>
+        <a role="tab" href="https://github.com/halfhourhq" target="_blank" rel="noreferrer" class={`tab ${view === '#opensource' ? 'tab-active' : ''}`}>Open Source <span class="ml-2"><SquareArrowOutUpRight size={15}/></span></a>
       </div>
       {#if view === '#statistics' }
-        <div class="tab-content">
+        <div class="card card-border card-sm w-full max-w-5xl min-w-xs mt-8">
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 row-auto">
+            <div class="card-body items-end">
+              <h3 class="card-title">Storage/Meetings</h3>
+              <div class="stats shadow stats-vertical w-full">
+                <div class="stat place-items-center">
+                  <div class="stat-title text-neutral">Total Messages</div>
+                  <div class="stat-value">{data.meetings.total_messages}</div>
+                </div>
+                <div class="stat place-items-center">
+                  <div class="stat-title text-neutral">Total Storage</div>
+                  <div class="stat-value">{data.meetings.total_storage}</div>
+                </div>
+                <div class="stat place-items-center">
+                  <div class="stat-title text-neutral">Active Meetings</div>
+                  <div class="stat-value">{data.meetings.total_active_connections}</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="card-body items-end">
+              <h3 class="card-title">Meetings/Invites</h3>
+              <div class="stats shadow stats-vertical w-full">
+                <div class="stat place-items-center">
+                  <div class="stat-title text-neutral">Upcoming Meetings</div>
+                  <div class="stat-value">{data.meetings.total_upcoming_connections}</div>
+                </div>
+                <div class="stat place-items-center">
+                  <div class="stat-title text-neutral">Upcoming Invites</div>
+                  <div class="stat-value">{data.meetings.total_upcoming_invites}</div>
+                </div>
+                <div class="stat place-items-center">
+                  <div class="stat-title text-neutral">Active Invites</div>
+                  <div class="stat-value">{data.meetings.total_active_invites}</div>
+                </div>
+              </div>
+            </div>
+              
+            {#if data.meetings.median_responses || data.meetings.mode_responses || data.meetings.max_responses}
+              <div class="card-body items-end">
+                <h3 class="card-title">Responses</h3>
+                <div class="stats shadow stats-vertical w-full">
+                  {#if data.meetings.median_responses}
+                    <div class="stat place-items-center">
+                      <div class="stat-title text-neutral">Median Responses</div>
+                      <div class="stat-value">{data.meetings.median_responses}</div>
+                    </div>
+                  {/if}
+                  {#if data.meetings.mode_responses}
+                    <div class="stat place-items-center">
+                      <div class="stat-title text-neutral">Frequent Responses</div>
+                      <div class="stat-value">{data.meetings.mode_responses}</div>
+                    </div>
+                  {/if}
+                  {#if data.meetings.max_responses}
+                    <div class="stat place-items-center">
+                      <div class="stat-title text-neutral">Most Responses</div>
+                      <div class="stat-value">{data.meetings.max_responses}</div>
+                    </div>
+                  {/if}
+                </div>
+              </div>
+            {/if}
+            
+            <div class="card-body items-end">
+              <h3 class="card-title">Files clean-up</h3>
+              <div class="stats shadow stats-vertical w-full">
+                <div class="stat place-items-center">
+                  <div class="stat-title text-neutral">Success</div>
+                  <div class="stat-value">{data.jobs.files.last_success}</div>
+                </div>
+                <div class="stat place-items-center">
+                  <div class="stat-title text-neutral">Duration</div>
+                  <div class="stat-value">{data.jobs.files.last_duration}ms</div>
+                </div>
+                <div class="stat place-items-center">
+                  <div class="stat-title text-neutral">Time</div>
+                  <div class="stat-value">{time_formatter.format(new Date(data.jobs.files.last_run))}</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="card-body items-end">
+              <h3 class="card-title">Organisers clean-up</h3>
+              <div class="stats shadow stats-vertical w-full">
+                <div class="stat place-items-center">
+                  <div class="stat-title text-neutral">Success</div>
+                  <div class="stat-value">{data.jobs.organisers.last_success}</div>
+                </div>
+                <div class="stat place-items-center">
+                  <div class="stat-title text-neutral">Duration</div>
+                  <div class="stat-value">{data.jobs.organisers.last_duration}ms</div>
+                </div>
+                <div class="stat place-items-center">
+                  <div class="stat-title text-neutral">Time</div>
+                  <div class="stat-value">{time_formatter.format(new Date(data.jobs.organisers.last_run))}</div>
+                </div>
+              </div>
+            </div>
+              
+            <div class="card-body items-end">
+              <h3 class="card-title">Attendees clean-up</h3>
+              <div class="stats shadow stats-vertical w-full">
+                <div class="stat place-items-center">
+                  <div class="stat-title text-neutral">Success</div>
+                  <div class="stat-value">{data.jobs.attendees.last_success}</div>
+                </div>
+                <div class="stat place-items-center">
+                  <div class="stat-title text-neutral">Duration</div>
+                  <div class="stat-value">{data.jobs.attendees.last_duration}ms</div>
+                </div>
+                <div class="stat place-items-center">
+                  <div class="stat-title text-neutral">Time</div>
+                  <div class="stat-value">{time_formatter.format(new Date(data.jobs.attendees.last_run))}</div>
+                </div>
+              </div>
+            </div>
+              
+            <div class="card-body items-end">
+              <h3 class="card-title">Sessions clean-up</h3>
+              <div class="stats shadow stats-vertical w-full">
+                <div class="stat place-items-center">
+                  <div class="stat-title text-neutral">Success</div>
+                  <div class="stat-value">{data.jobs.sessions.last_success}</div>
+                </div>
+                <div class="stat place-items-center">
+                  <div class="stat-title text-neutral">Duration</div>
+                  <div class="stat-value">{data.jobs.sessions.last_duration}ms</div>
+                </div>
+                <div class="stat place-items-center">
+                  <div class="stat-title text-neutral">Time</div>
+                  <div class="stat-value">{time_formatter.format(new Date(data.jobs.sessions.last_run))}</div>
+                </div>
+              </div>
+            </div>
+          </div>
           
         </div>
+      {/if}
+      {#if view === '#tutorial'}
+        <ul class="steps text-left steps-vertical">
+          <li class="step step-accent">Organiser schedules a meeting.</li>
+          <li class="step step-accent text-left">Organiser shares meeting tag with attendee.</li>
+          <li class="step step-secondary">Attendee responds to meeting tag.</li>
+          <li class="step step-secondary">Attendee shares response tag with organiser.</li>
+          <li class="step step-accent">Organiser logs back to accept the response tag.</li>
+          <li class="step step-neutral">Attendee & organiser are connected.</li>
+          <li class="step step-neutral">Meeting starts as scheduled.</li>
+          <li class="step step-neutral">Meeting ends after 30 minutes.</li>
+          <li class="step step-neutral">Everything is deleted.</li>
+        </ul>
+        <iframe 
+          class="w-full max-w-3xl rounded-3xl"
+          width="775" 
+          height="436" 
+          src="https://www.youtube.com/embed/j1aNMu8JkA4" 
+          title="How to use HalfHour anonymous scheduled chats" 
+          frameborder="0"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+          referrerpolicy="strict-origin-when-cross-origin" allowfullscreen
+        ></iframe>
       {/if}
     </div>
   </div>
