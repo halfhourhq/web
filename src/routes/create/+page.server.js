@@ -2,7 +2,7 @@ import { error, fail, redirect } from '@sveltejs/kit'
 import { PUBLIC_SERVER_URL } from '$env/static/public'
 
 export const actions = {
-  create: async ({ request, cookies }) => {
+  create: async ({ request, cookies, getClientAddress }) => {
     const token = cookies.get('access_token')
     const data = await request.formData()
     const values = Object.fromEntries( Object.entries( Object.fromEntries(data.entries()) ).filter(([_, value]) => value != "") )
@@ -18,7 +18,8 @@ export const actions = {
         method: 'POST',
         headers: { 
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}` 
+          'Authorization': `Bearer ${token}`,
+          'X-Forwarded-For': getClientAddress()
         },
         body: JSON.stringify({
           name: name,
