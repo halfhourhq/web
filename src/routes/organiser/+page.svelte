@@ -25,11 +25,11 @@
 	<meta name="description" content="Scheduled meeting organiser." />
 </svelte:head>
 
-<div class="flex flex-col justify-items-start items-center">
+<div class="flex flex-col justify-items-start items-center gap-4">
   <div class="card card-border border-base-300 bg-base-100 max-w-md w-full min-w-xs">
     {#if connect ===  false}
       <section class="card-body">
-        <h1 class="card-title">{data.organiser.name}</h1>
+        <h1 class="card-title">Meeting</h1>
         {#if new Date(data.organiser.start_time) < new Date() && new Date(data.organiser.end_time > new Date())}
           <div class="stats stats-vertical shadow">
             <div class="stat place-items-center">
@@ -113,6 +113,13 @@
         </div>
       </form>
     {/if}
+  </div>
+
+  <div class="card text-base-100 bg-neutral max-w-md w-full min-w-xs">
+    <section class="card-body font-mono">
+      <h1 class="card-title">{data.organiser.name}</h1>
+      <span>Your meeting tag is <strong>{data.organiser.meeting_tag}</strong></span>
+    </section>
   </div>
 </div>
 <div class="toast toast-top toast-center">

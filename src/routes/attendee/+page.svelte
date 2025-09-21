@@ -31,8 +31,8 @@
 	<meta name="description" content="Scheduled meeting attendee." />
 </svelte:head>
 
-<div class="flex flex-col justify-items-start items-center">
-  <div class="card card-border border-base-300 bg-base-100 max-w-sm w-full min-w-xs">
+<div class="flex flex-col justify-items-start items-center gap-4">
+  <div class="card card-border border-base-300 bg-base-100 max-w-md w-full min-w-xs">
     <section class="card-body">
       <h1 class="card-title">Response status</h1>
       <div class="w-full text-center mt-2 mb-2">
@@ -95,6 +95,14 @@
           {/if}
         </form>
       {/if}
+    </section>
+  </div>
+  <div class="card text-base-100 bg-neutral max-w-md w-full min-w-xs">
+    <section class="card-body font-mono">
+      <h1 class="card-title">{data.attendee.name}</h1>
+      <span>Your response tag is {data.attendee.response_tag}</span>
+      <span>Your meeting will be with <strong>{data.attendee.organiser_name}</strong></span>
+      <span>& their meeting tag is {data.attendee.meeting_tag}</span>
     </section>
   </div>
 </div>

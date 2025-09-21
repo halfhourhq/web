@@ -94,9 +94,8 @@
   {#if data?.user}
     <div class="card card-border border-base-300 card-sm bg-base-100 max-w-sm w-full min-w-xs">
       <section class="card-body">
-        <h2 class="card-title uppercase">{data.user.name}</h2>
-        <span>You are currently logged in.</span>
-        <form class="card-actions" method="POST" action="?/logout" use:enhance={async ({formData, cancel}) => {
+        <h2 class="card-title uppercase">Hello, {`${data.user.response_tag ? 'attendee' : 'organiser'}`}!</h2>
+        <form class="card-actions mt-4" method="POST" action="?/logout" use:enhance={async ({formData, cancel}) => {
             loading = true
             return async ({result, update}) => {
               if(result.data?.error){ 
@@ -110,10 +109,10 @@
               loading = false
             }
           }}>
-          <button class="btn btn-outline flex-1 uppercase">
-            Leave session
+          <button class="btn btn-outline flex-1">
+            Logout
           </button>
-          <a href={`/${data.user.response_tag ? 'attendee' : 'organiser'}`} class="btn btn-primary uppercase flex-1" >Status</a>
+          <a href={`/${data.user.response_tag ? 'attendee' : 'organiser'}`} class="btn btn-primary flex-1" >Meeting</a>
         </form>
       </section>
     </div> 
@@ -326,8 +325,8 @@
               <h3 class="card-title">Files clean-up</h3>
               <div class="stats shadow stats-vertical w-full">
                 <div class="stat place-items-center">
-                  <div class="stat-title text-neutral">Success</div>
-                  <div class="stat-value">{data.jobs.files.last_success}</div>
+                  <div class="stat-title text-neutral">Successful</div>
+                  <div class="stat-value">{data.jobs.files.last_success ? 'True' : 'False'}</div>
                 </div>
                 <div class="stat place-items-center">
                   <div class="stat-title text-neutral">Duration</div>
@@ -344,8 +343,8 @@
               <h3 class="card-title">Organisers clean-up</h3>
               <div class="stats shadow stats-vertical w-full">
                 <div class="stat place-items-center">
-                  <div class="stat-title text-neutral">Success</div>
-                  <div class="stat-value">{data.jobs.organisers.last_success}</div>
+                  <div class="stat-title text-neutral">Successful</div>
+                  <div class="stat-value">{data.jobs.organisers.last_success ? 'True' : 'False'}</div>
                 </div>
                 <div class="stat place-items-center">
                   <div class="stat-title text-neutral">Duration</div>
@@ -362,8 +361,8 @@
               <h3 class="card-title">Attendees clean-up</h3>
               <div class="stats shadow stats-vertical w-full">
                 <div class="stat place-items-center">
-                  <div class="stat-title text-neutral">Success</div>
-                  <div class="stat-value">{data.jobs.attendees.last_success}</div>
+                  <div class="stat-title text-neutral">Successful</div>
+                  <div class="stat-value">{data.jobs.attendees.last_success ? 'True' : 'False'}</div>
                 </div>
                 <div class="stat place-items-center">
                   <div class="stat-title text-neutral">Duration</div>
@@ -380,8 +379,8 @@
               <h3 class="card-title">Sessions clean-up</h3>
               <div class="stats shadow stats-vertical w-full">
                 <div class="stat place-items-center">
-                  <div class="stat-title text-neutral">Success</div>
-                  <div class="stat-value">{data.jobs.sessions.last_success}</div>
+                  <div class="stat-title text-neutral">Successful</div>
+                  <div class="stat-value">{data.jobs.sessions.last_success ? 'True' : 'False'}</div>
                 </div>
                 <div class="stat place-items-center">
                   <div class="stat-title text-neutral">Duration</div>
