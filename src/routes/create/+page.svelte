@@ -49,7 +49,10 @@
         add_toast({ message: 'The password must be at least 10 characters long', type: 'error', auto: true }) 
         cancel()
         loading = false
-      } else { 
+      } else {
+        const date_time = new Date( date_string+'T'+time_string )
+        formData.append('date_time', date_time)
+        
         const salt = crypto.getRandomValues(new Uint8Array(16))
         const hash_auth = await hashAuthenticationPass(password, salt)
         formData.append('password_hash', hash_auth)
