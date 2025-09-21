@@ -1,0 +1,38 @@
+import { error, fail, redirect } from '@sveltejs/kit'
+import { PUBLIC_SERVER_URL } from '$env/static/public'
+
+export const actions = {
+  respond: async ({ request, cookies }) => {
+    const token = cookies.get('access_token')
+    const data = await request.formData()
+    const values = Object.fromEntries( Object.entries( Object.fromEntries(data.entries()) ).filter(([_, value]) => value != "") )
+    const name = values.name
+    const public_key = values.public_key
+    const keypair_salt = values.keypair_salt
+    const password_hash = values.password_hash
+    const password_salt = values.password_salt
+    const meeting_tag = values.meeting_tag
+
+    const res = await fetch(`${PUBLIC_SERVER_URL}/attendee`,
+      {
+        method: 'POST',
+        headers: { 
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}` 
+        },
+        body: JSON.stringify({
+          name: name,
+          meeting_tag: meeting_tag,
+          public_key: public_key,
+          keypair_salt: keypair_salt,
+          password_hash: password_hash,
+          password_salt: password_salt
+        })
+      }
+    )
+    
+    if(!res.ok){ return fail(res.status, { error: await res.text()}) }
+
+    return { attendee: await res.json() }
+  }
+}
