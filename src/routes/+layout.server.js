@@ -1,20 +1,20 @@
 import { PUBLIC_SERVER_URL } from '$env/static/public'
 import { decodeJwt } from 'jose'
 
-export async function load({ cookies, url, request }){
+export async function load({ cookies, url, request, getClientAddress }){
   const token = cookies.get('access_token')
   if(token){
     const claims = decodeJwt(token)
     const user = await fetch(`${PUBLIC_SERVER_URL}/${claims.role}`, {
       method: 'GET',
-      headers: { 'Authorization': `Bearer ${token}`  }
+      headers: { 'Authorization': `Bearer ${token}`, 'X-Forwarded-For': getClientAddress()  }
     })
 
     if(!user.ok) {
       const session = await fetch(`${PUBLIC_SERVER_URL}/session`,
         {
           method: 'DELETE',
-          headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` }
+          headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}`, 'X-Forwarded-For': getClientAddress() }
         }
       )
 

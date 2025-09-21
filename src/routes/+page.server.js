@@ -2,11 +2,18 @@ import { error, fail, redirect } from '@sveltejs/kit'
 import { PUBLIC_SERVER_URL, PUBLIC_APP_ENV, PUBLIC_COOKIE_DOMAIN } from '$env/static/public'
 import { decodeJwt } from 'jose'
 
-export async function load({ cookies, params }){
+export async function load({ cookies, params, getClientAddress }){
   const id = params.id
-
-  const res_meetings = await fetch(`${PUBLIC_SERVER_URL}/statistics/meetings`)
-  const res_jobs = await fetch(`${PUBLIC_SERVER_URL}/statistics/jobs`)
+  const res_meetings = await fetch(`${PUBLIC_SERVER_URL}/statistics/meetings`, {
+    headers: {
+      'X-Forwarded-For': getClientAddress()
+    }
+  })
+  const res_jobs = await fetch(`${PUBLIC_SERVER_URL}/statistics/jobs`, {
+    headers: {
+      'X-Forwarded-For': getClientAddress()
+    }
+  })
 
   if(!res_meetings.ok){
     error(res_meetings.status, { message: await res_meetings.text() })
@@ -20,7 +27,7 @@ export async function load({ cookies, params }){
 }
 
 export const actions = {
-  organiser: async ({ request, cookies }) => {
+  organiser: async ({ request, cookies, getClientAddress }) => {
     const token = cookies.get('access_token')
 
     const data = await request.formData()
@@ -33,7 +40,8 @@ export const actions = {
       {
         method: 'POST',
         headers: { 
-          'Content-Type': 'application/json', 'User-Agent': request.headers.get('user-agent')
+          'Content-Type': 'application/json', 'User-Agent': request.headers.get('user-agent'),
+          'X-Forwarded-For': getClientAddress()
         },
         body: JSON.stringify({
           meeting_tag: meeting_tag,
@@ -53,7 +61,6 @@ export const actions = {
       expires: new Date(claims.exp*1000)
     }
 
-    console.log(auth)
     if(PUBLIC_APP_ENV === 'production'){ cookieOptions.domain = PUBLIC_COOKIE_DOMAIN }
     cookies.set('access_token', auth.access_token, cookieOptions)
     cookies.set('session_id', claims.sid, { sameSite: 'strict', path: '/', expires: new Date(claims.exp*1000), httpOnly: false })
@@ -65,7 +72,7 @@ export const actions = {
       redirect(302, '/organiser')
     }
   },
-  attendee: async ({ request, cookies }) => {
+  attendee: async ({ request, cookies, getClientAddress }) => {
     const token = cookies.get('access_token')
 
     const data = await request.formData()
@@ -78,7 +85,8 @@ export const actions = {
       {
         method: 'POST',
         headers: { 
-          'Content-Type': 'application/json', 'User-Agent': request.headers.get('user-agent')
+          'Content-Type': 'application/json', 'User-Agent': request.headers.get('user-agent'),
+          'X-Forwarded-For': getClientAddress()
         },
         body: JSON.stringify({
           response_tag: response_tag,
@@ -107,13 +115,13 @@ export const actions = {
       redirect(302, '/attendee')
     }
   },
-  logout: async ({cookies}) => {
+  logout: async ({cookies, getClientAddress}) => {
     const token = cookies.get('access_token')
 
     const res = await fetch(`${PUBLIC_SERVER_URL}/session`,
       {
         method: 'DELETE',
-        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` }
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}`, 'X-Forwarded-For': getClientAddress() }
       }
     )
 
