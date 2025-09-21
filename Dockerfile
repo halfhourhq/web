@@ -37,4 +37,4 @@ RUN npm install dotenv
 CMD ["node", "-r", "dotenv/config", "build"]
 
 # Expose the port the app runs on
-EXPOSE 5173
+EXPOSE 5174
