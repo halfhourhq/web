@@ -7,16 +7,12 @@ export const actions = {
     const data = await request.formData()
     const values = Object.fromEntries( Object.entries( Object.fromEntries(data.entries()) ).filter(([_, value]) => value != "") )
     const name = values.name
-    const date = values.date
-    const time = values.time
+    const date_time = values.date_time
     const public_key = values.public_key
     const keypair_salt = values.keypair_salt
     const password_hash = values.password_hash
     const password_salt = values.password_salt
 
-    if(!date || !time){ return fail(400, { posterror: 'Please fill in both the date and time' }) }
-
-    const start = new Date( date+'T'+time )
     const res = await fetch(`${PUBLIC_SERVER_URL}/organiser`,
       {
         method: 'POST',
@@ -26,7 +22,7 @@ export const actions = {
         },
         body: JSON.stringify({
           name: name,
-          start_time: start,
+          start_time: date_time,
           public_key: public_key,
           keypair_salt: keypair_salt,
           password_salt: password_salt,
