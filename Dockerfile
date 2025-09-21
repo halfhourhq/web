@@ -19,6 +19,9 @@ RUN npm run build
 # Step 7: Prepare the final image by using a smaller base image for the runtime
 FROM node:22-slim
 
+# Install curl for healthchecks
+RUN apt-get update && apt-get install -y curl && rm -rf /var/lib/apt/lists/*
+
 # Step 8: Set the working directory in the new image
 WORKDIR /app
 
