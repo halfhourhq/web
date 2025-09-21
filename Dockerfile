@@ -7,7 +7,7 @@ WORKDIR /app
 # Step 3: Copy package.json and package-lock.json files
 COPY package*.json ./
 
-# Step 4: Install production dependencies
+# Step 4: Install all dependencies
 RUN npm ci --omit=dev
 
 # Step 5: Copy the rest of the app's source code
@@ -27,10 +27,13 @@ COPY --from=builder /app/build ./build
 COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/package*.json ./
 
-# Step 10: Install dotenv for loading environment variables in production
+# Step 10: Install production dependencies
+RUN npm ci --omit=dev
+
+# Step 11: Install dotenv for loading environment variables in production
 RUN npm install dotenv
 
-# Step 11: Set the command to run the app
+# Step 12: Set the command to run the app
 CMD ["node", "-r", "dotenv/config", "build"]
 
 # Expose the port the app runs on
