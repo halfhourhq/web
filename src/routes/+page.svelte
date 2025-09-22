@@ -13,6 +13,7 @@
   import database from '$lib/surrealdb'
   import { RecordId } from 'surrealdb'
   import { hashAuthenticationPass, hashEncryptionPass } from '$lib/encryption.js'
+  import { number_size, data_size } from '$lib/sizes.js'
 
   let { data } = $props()
 
@@ -264,15 +265,15 @@
               <div class="stats shadow stats-vertical w-full">
                 <div class="stat place-items-center">
                   <div class="stat-title text-neutral">Total Messages</div>
-                  <div class="stat-value">{data.meetings.total_messages}</div>
+                  <div class="stat-value">{number_size(data.meetings.total_messages)}</div>
                 </div>
                 <div class="stat place-items-center">
                   <div class="stat-title text-neutral">Total Storage</div>
-                  <div class="stat-value">{data.meetings.total_storage}</div>
+                  <div class="stat-value">{data_size(data.meetings.total_storage)}</div>
                 </div>
                 <div class="stat place-items-center">
                   <div class="stat-title text-neutral">Active Meetings</div>
-                  <div class="stat-value">{data.meetings.total_active_connections}</div>
+                  <div class="stat-value">{number_size(data.meetings.total_active_connections)}</div>
                 </div>
               </div>
             </div>
@@ -282,15 +283,15 @@
               <div class="stats shadow stats-vertical w-full">
                 <div class="stat place-items-center">
                   <div class="stat-title text-neutral">Upcoming Meetings</div>
-                  <div class="stat-value">{data.meetings.total_upcoming_connections}</div>
+                  <div class="stat-value">{number_size(data.meetings.total_upcoming_connections)}</div>
                 </div>
                 <div class="stat place-items-center">
                   <div class="stat-title text-neutral">Upcoming Invites</div>
-                  <div class="stat-value">{data.meetings.total_upcoming_invites}</div>
+                  <div class="stat-value">{number_size(data.meetings.total_upcoming_invites)}</div>
                 </div>
                 <div class="stat place-items-center">
                   <div class="stat-title text-neutral">Active Invites</div>
-                  <div class="stat-value">{data.meetings.total_active_invites}</div>
+                  <div class="stat-value">{number_size(data.meetings.total_active_invites)}</div>
                 </div>
               </div>
             </div>
@@ -302,19 +303,19 @@
                   {#if data.meetings.median_responses}
                     <div class="stat place-items-center">
                       <div class="stat-title text-neutral">Median Responses</div>
-                      <div class="stat-value">{data.meetings.median_responses}</div>
+                      <div class="stat-value">{number_size(data.meetings.median_responses)}</div>
                     </div>
                   {/if}
                   {#if data.meetings.mode_responses}
                     <div class="stat place-items-center">
                       <div class="stat-title text-neutral">Frequent Responses</div>
-                      <div class="stat-value">{data.meetings.mode_responses}</div>
+                      <div class="stat-value">{number_size(data.meetings.mode_responses)}</div>
                     </div>
                   {/if}
                   {#if data.meetings.max_responses}
                     <div class="stat place-items-center">
                       <div class="stat-title text-neutral">Most Responses</div>
-                      <div class="stat-value">{data.meetings.max_responses}</div>
+                      <div class="stat-value">{number_size(data.meetings.max_responses)}</div>
                     </div>
                   {/if}
                 </div>
