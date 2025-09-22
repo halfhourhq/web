@@ -76,7 +76,7 @@
     }}>
       {#if organiser}
         <h1 class="card-title">Share the meeting</h1>
-        <div role="alert" class="alert alert-soft alert-info">
+        <div role="alert" class="alert alert-info">
           <Info />
           <span>Copy the meeting tag below as it is & share it with whomever you want to invite</span>
         </div>
@@ -106,7 +106,7 @@
           <a href="/" onclick={() => organiser = null} class="btn btn-outline flex-1">Join Meeting</a>
         </div>
       {:else}
-        <h1 class="card-title">Create Meeting Invitation</h1>
+        <h1 class="card-title">Create meeting invitation</h1>
         <fieldset class="fieldset">
           <label for="name" class="fieldset-legend">Name</label>
           <span class="label text-wrap">It could be anything, get creative.</span>

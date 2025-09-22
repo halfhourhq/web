@@ -471,7 +471,7 @@
                       </figure>
                       {#if msg.body.length > 0 }
                         <div class="card-body">
-                          <span class={`text-sm ${msg.in === person ? 'text-base-100' : 'text-neutral'}`}>{msg.body}</span>
+                          <span class={`text-sm ${msg.in === person ? 'text-neutral' : 'text-base-100'}`}>{msg.body}</span>
                         </div>
                       {/if}
                     {:else}
