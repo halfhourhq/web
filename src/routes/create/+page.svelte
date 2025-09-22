@@ -52,7 +52,7 @@
       } else {
         const date_time = new Date( date_string+'T'+time_string )
         formData.append('date_time', date_time)
-        
+
         const salt = crypto.getRandomValues(new Uint8Array(16))
         const hash_auth = await hashAuthenticationPass(password, salt)
         formData.append('password_hash', hash_auth)
@@ -66,8 +66,8 @@
       }
 
       return async ({result, update}) => {
-        if(result.data?.posterror){ 
-          add_toast({ message: result.data.posterror, type: 'error', auto: true }) 
+        if(result.data?.error){ 
+          add_toast({ message: result.data.error, type: 'error', auto: true }) 
         }
         organiser = result.data?.organiser
         loading = false
