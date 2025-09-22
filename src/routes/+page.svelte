@@ -120,7 +120,7 @@
   {:else}
     <div class="card card-border border-base-300 card-sm bg-base-100 max-w-sm w-full">
       <section class="card-body">
-        <h1 class="card-title uppercase">Join Meeting</h1>
+        <h1 class="card-title uppercase">Join Meeting {sign_in === 'organiser' ? 'as Organiser' : sign_in === 'attendee' ? 'as Attendee' : ''}</h1>
 
         {#if sign_in === 'organiser'}
           <form method="POST" action="?/organiser" use:enhance={async ({formData, cancel}) => {

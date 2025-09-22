@@ -73,7 +73,7 @@
     }}>
       {#if attendee}
         <h1 class="card-title">Share your response</h1>
-        <div role="alert" class="alert alert-soft alert-info">
+        <div role="alert" class="alert alert-info">
           <Info />
           <span>Copy the reponse tag below as it is & share it with whomever invited you to the meeting</span>
         </div>
@@ -103,7 +103,7 @@
           <a href="/" onclick={() => attendee = null} class="btn btn-outline flex-1">Join Meeting</a>
         </div>
       {:else}
-        <h1 class="card-title">Respond to Meeting Invitation</h1>
+        <h1 class="card-title">Respond to meeting invitation</h1>
         <fieldset class="fieldset">
           <label for="meeting_tag" class="fieldset-legend">Meeting tag</label>
           <span class="label text-wrap">The meeting you are responding to.</span>
