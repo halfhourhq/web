@@ -2,16 +2,16 @@ import { error, fail, redirect } from '@sveltejs/kit'
 import { PUBLIC_SERVER_URL, PUBLIC_APP_ENV, PUBLIC_COOKIE_DOMAIN } from '$env/static/public'
 import { decodeJwt } from 'jose'
 
-export async function load({ cookies, params, getClientAddress }){
+export async function load({ cookies, params, request }){
   const id = params.id
   const res_meetings = await fetch(`${PUBLIC_SERVER_URL}/statistics/meetings`, {
     headers: {
-      'X-Forwarded-For': getClientAddress()
+      'X-Forwarded-For': request.headers.get('x-real-ip') || request.headers.get('x-forwarded-for')
     }
   })
   const res_jobs = await fetch(`${PUBLIC_SERVER_URL}/statistics/jobs`, {
     headers: {
-      'X-Forwarded-For': getClientAddress()
+      'X-Forwarded-For': request.headers.get('x-real-ip') || request.headers.get('x-forwarded-for')
     }
   })
 
@@ -27,7 +27,7 @@ export async function load({ cookies, params, getClientAddress }){
 }
 
 export const actions = {
-  organiser: async ({ request, cookies, getClientAddress }) => {
+  organiser: async ({ request, cookies }) => {
     const token = cookies.get('access_token')
 
     const data = await request.formData()
@@ -41,7 +41,7 @@ export const actions = {
         method: 'POST',
         headers: { 
           'Content-Type': 'application/json', 'User-Agent': request.headers.get('user-agent'),
-          'X-Forwarded-For': getClientAddress()
+          'X-Forwarded-For': request.headers.get('x-real-ip') || request.headers.get('x-forwarded-for')
         },
         body: JSON.stringify({
           meeting_tag: meeting_tag,
@@ -72,7 +72,7 @@ export const actions = {
       redirect(302, '/organiser')
     }
   },
-  attendee: async ({ request, cookies, getClientAddress }) => {
+  attendee: async ({ request, cookies }) => {
     const token = cookies.get('access_token')
 
     const data = await request.formData()
@@ -86,7 +86,7 @@ export const actions = {
         method: 'POST',
         headers: { 
           'Content-Type': 'application/json', 'User-Agent': request.headers.get('user-agent'),
-          'X-Forwarded-For': getClientAddress()
+          'X-Forwarded-For': request.headers.get('x-real-ip') || request.headers.get('x-forwarded-for')
         },
         body: JSON.stringify({
           response_tag: response_tag,
@@ -115,13 +115,13 @@ export const actions = {
       redirect(302, '/attendee')
     }
   },
-  logout: async ({cookies, getClientAddress}) => {
+  logout: async ({cookies, request}) => {
     const token = cookies.get('access_token')
 
     const res = await fetch(`${PUBLIC_SERVER_URL}/session`,
       {
         method: 'DELETE',
-        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}`, 'X-Forwarded-For': getClientAddress() }
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}`, 'X-Forwarded-For': request.headers.get('x-real-ip') || request.headers.get('x-forwarded-for') }
       }
     )
 

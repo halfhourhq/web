@@ -2,7 +2,7 @@ import { error, fail, redirect } from '@sveltejs/kit'
 import { PUBLIC_SERVER_URL } from '$env/static/public'
 
 export const actions = {
-  respond: async ({ request, cookies, getClientAddress }) => {
+  respond: async ({ request, cookies }) => {
     const token = cookies.get('access_token')
     const data = await request.formData()
     const values = Object.fromEntries( Object.entries( Object.fromEntries(data.entries()) ).filter(([_, value]) => value != "") )
@@ -19,7 +19,7 @@ export const actions = {
         headers: { 
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`,
-          'X-Forwarded-For': getClientAddress() 
+          'X-Forwarded-For': request.headers.get('x-real-ip') || request.headers.get('x-forwarded-for') 
         },
         body: JSON.stringify({
           name: name,
