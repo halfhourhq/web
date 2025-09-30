@@ -16,6 +16,7 @@
   let date = $state(new Date(Date.now() + 1000*60*5))
   let date_string = $derived(date.toISOString().split('T')[0])
   let time_string = $derived(`${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}`)
+  let date_time = $derived(new Date( date_string+'T'+time_string ))
 
   function copy_tag(){
     navigator.clipboard.writeText(organiser.meeting_tag)
@@ -50,7 +51,6 @@
         cancel()
         loading = false
       } else {
-        const date_time = new Date( date_string+'T'+time_string )
         formData.append('date_time', date_time)
 
         const salt = crypto.getRandomValues(new Uint8Array(16))
@@ -117,6 +117,12 @@
           <input id="password" bind:value={password} autocomplete="off" type="password" class="input w-full" placeholder="Password" />
           <div class="divider"></div>
           <p class="fieldset-legend">Schedule</p>
+          {#if date_time.valueOf() < (Date.now()+(1000*60*60*36))}
+            <div role="alert" class="alert alert-warning">
+              <Info />
+              <span class="font-semibold">Make sure to schedule far enough into the future to give the attendee enough time to see and respond to your invitation.</span>
+            </div>
+          {/if}
           <label for="date" class="label">Date</label>
           <input id="date" name="date" bind:value={date_string} type="date" class="input w-full" />
           <label for="time" class="label">Time</label>
